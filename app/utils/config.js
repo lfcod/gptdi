@@ -58,8 +58,8 @@ export const openAi = async (data, options) => {
     // @ts-ignore
     headers: {
       //   Authorization: "Bearer " + window.localStorage.getItem("token"),
-      appid: accessMessage.appid,
-      appsecret: accessMessage.appsecret,
+      appid: "64859716613cb" || accessMessage.appid,
+      appsecret: "0c11836369674cb6c8139497914c94dc" || accessMessage.appsecret,
       // Authorization:
       //   "Bearer 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",
       "Content-Type": "application/json",
