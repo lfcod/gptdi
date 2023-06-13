@@ -33,25 +33,24 @@ export async function requestOpenai(req: NextRequest) {
 
   // const fetchUrl = `${baseUrl}/${openaiPath}`;
   const fetchUrl = `https://api.fe8.cn/v1/chat/account`;
-  const fetchOptions = {
+  const fetchOptions: any = {
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
-      appid: localStorage.getItem("appid"),
-      appsecret: localStorage.getItem("appsecret"),
+      appid: localStorage.getItem("appid") || "",
+      appsecret: localStorage.getItem("appsecret") || "",
 
       // Authorization: authValue,
-      // ...(process.env.OPENAI_ORG_ID && {
-      //   "OpenAI-Organization": process.env.OPENAI_ORG_ID,
-      // }),
+      ...(process.env.OPENAI_ORG_ID && {
+        "OpenAI-Organization": process.env.OPENAI_ORG_ID,
+      }),
     },
     cache: "no-store",
     method: req.method,
-    body: req.body,
+    body: req.body || "",
     signal: controller.signal,
   };
 
-  console.log("Access", fetchOptions);
   // #1815 try to refuse gpt4 request
   if (DISABLE_GPT4 && req.body) {
     try {
