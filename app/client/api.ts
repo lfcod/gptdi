@@ -96,8 +96,13 @@ export const api = new ClientApi();
 export function getHeaders() {
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {
+    // "content-type": "application/json",
     "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    // accept: "*/*",
     "x-requested-with": "XMLHttpRequest",
+    appid: accessStore.appid,
+    appsecret: accessStore.appsecret,
   };
 
   const makeBearer = (token: string) => `Bearer ${token.trim()}`;

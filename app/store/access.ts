@@ -8,12 +8,16 @@ import { ALL_MODELS } from "./config";
 export interface AccessControlStore {
   accessCode: string;
   token: string;
-
+  appid: string;
+  appsecret: string;
   needCode: boolean;
   hideUserApiKey: boolean;
   openaiUrl: string;
 
   updateToken: (_: string) => void;
+  updateAppId: (_: string) => void;
+  updateAppsecret: (_: string) => void;
+
   updateCode: (_: string) => void;
   enabledAccessControl: () => boolean;
   isAuthorized: () => boolean;
@@ -28,6 +32,8 @@ export const useAccessStore = create<AccessControlStore>()(
       token: "",
       accessCode: "",
       needCode: true,
+      appid: "",
+      appsecret: "",
       hideUserApiKey: false,
       openaiUrl: "/api/openai/",
 
@@ -41,6 +47,12 @@ export const useAccessStore = create<AccessControlStore>()(
       },
       updateToken(token: string) {
         set(() => ({ token }));
+      },
+      updateAppId(appid: string) {
+        set(() => ({ appid }));
+      },
+      updateAppsecret(appsecret: string) {
+        set(() => ({ appsecret }));
       },
       isAuthorized() {
         get().fetch();

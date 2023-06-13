@@ -2,6 +2,7 @@ import { OpenaiPath, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
+import { openAi } from "../../utils/config";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -23,6 +24,7 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
+    console.log("options", options);
     const messages = options.messages.map((v) => ({
       role: v.role,
       content: v.content,
@@ -49,114 +51,157 @@ export class ChatGPTApi implements LLMApi {
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
+    const chatPayload = {
+      method: "POST",
+      body: JSON.stringify(requestPayload),
+      signal: controller.signal,
+      headers: getHeaders(),
+    };
 
-    try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
-      const chatPayload = {
-        method: "POST",
-        body: JSON.stringify(requestPayload),
-        signal: controller.signal,
-        headers: getHeaders(),
-      };
+    const params = {
+      ...requestPayload,
+    };
 
-      // make a fetch request
-      const requestTimeoutId = setTimeout(
-        () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
-      );
+    // try {
+    //   const options = {
+    //     onMessage: (val) => {
+    //       const newMsg = val?.content;
+    //       // list[1] = {
+    //       //   role: ROLENAME.CHATBOT,
+    //       //   content: newMsg + `<span class="blinking-cursor"></span>`,
+    //       // };
+    //       // setNewMessageListFn(list);
+    //     },
+    //     onEnd: async (val) => {
+    //       // setLoading(false);
 
-      if (shouldStream) {
-        let responseText = "";
-        let finished = false;
+    //       const newMsg = val?.content;
+    //       // await saveMessage({
+    //       //   message: newMsg,
+    //       //   question: inputText,
+    //       //   type: 2,
+    //       // });
+    //       // list[1] = {
+    //       //   role: ROLENAME.CHATBOT,
+    //       //   content: newMsg,
+    //       // };
+    //       // setNewMessageListFn(list);
+    //     },
+    //   };
 
-        const finish = () => {
-          if (!finished) {
-            options.onFinish(responseText);
-            finished = true;
-          }
-        };
+    //   openAi(params, options);
+    // } catch {
+    //   // setLoading(false);
+    // }
 
-        controller.signal.onabort = finish;
+    // try {
+    //   const chatPath = `https://api.fe8.cn/v1/chat/completions`;
+    //   const chatPayload = {
+    //     method: "POST",
+    //     body: JSON.stringify(requestPayload),
+    //     signal: controller.signal,
+    //     headers: getHeaders(),
+    //   };
+    //   console.log("chatPayload", chatPayload);
 
-        fetchEventSource(chatPath, {
-          ...chatPayload,
-          async onopen(res) {
-            clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
-            console.log(
-              "[OpenAI] request response content type: ",
-              contentType,
-            );
+    //   // make a fetch request
+    //   const requestTimeoutId = setTimeout(
+    //     () => controller.abort(),
+    //     REQUEST_TIMEOUT_MS,
+    //   );
 
-            if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().text();
-              return finish();
-            }
+    //   if (shouldStream) {
+    //     let responseText = "";
+    //     let finished = false;
 
-            if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
-            ) {
-              const responseTexts = [responseText];
-              let extraInfo = await res.clone().text();
-              try {
-                const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
+    //     const finish = () => {
+    //       if (!finished) {
+    //         options.onFinish(responseText);
+    //         finished = true;
+    //       }
+    //     };
 
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
+    //     controller.signal.onabort = finish;
 
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
+    //     fetchEventSource(chatPath, {
+    //       ...chatPayload,
+    //       async onopen(res) {
+    //         clearTimeout(requestTimeoutId);
+    //         const contentType = res.headers.get("content-type");
+    //         console.log(
+    //           "[OpenAI] request response content type: ",
+    //           contentType,
+    //         );
 
-              responseText = responseTexts.join("\n\n");
+    //         if (contentType?.startsWith("text/plain")) {
+    //           responseText = await res.clone().text();
+    //           return finish();
+    //         }
 
-              return finish();
-            }
-          },
-          onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
-              return finish();
-            }
-            const text = msg.data;
-            try {
-              const json = JSON.parse(text);
-              const delta = json.choices[0].delta.content;
-              if (delta) {
-                responseText += delta;
-                options.onUpdate?.(responseText, delta);
-              }
-            } catch (e) {
-              console.error("[Request] parse error", text, msg);
-            }
-          },
-          onclose() {
-            finish();
-          },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
-      } else {
-        const res = await fetch(chatPath, chatPayload);
-        clearTimeout(requestTimeoutId);
+    //         if (
+    //           !res.ok ||
+    //           !res.headers
+    //             .get("content-type")
+    //             ?.startsWith(EventStreamContentType) ||
+    //           res.status !== 200
+    //         ) {
+    //           const responseTexts = [responseText];
+    //           let extraInfo = await res.clone().text();
+    //           try {
+    //             const resJson = await res.clone().json();
+    //             extraInfo = prettyObject(resJson);
+    //           } catch {}
 
-        const resJson = await res.json();
-        const message = this.extractMessage(resJson);
-        options.onFinish(message);
-      }
-    } catch (e) {
-      console.log("[Request] failed to make a chat reqeust", e);
-      options.onError?.(e as Error);
-    }
+    //           if (res.status === 401) {
+    //             responseTexts.push(Locale.Error.Unauthorized);
+    //           }
+
+    //           if (extraInfo) {
+    //             responseTexts.push(extraInfo);
+    //           }
+
+    //           responseText = responseTexts.join("\n\n");
+
+    //           return finish();
+    //         }
+    //       },
+    //       onmessage(msg) {
+    //         if (msg.data === "[DONE]" || finished) {
+    //           return finish();
+    //         }
+    //         const text = msg.data;
+    //         try {
+    //           const json = JSON.parse(text);
+    //           const delta = json.choices[0].delta.content;
+    //           if (delta) {
+    //             responseText += delta;
+    //             options.onUpdate?.(responseText, delta);
+    //           }
+    //         } catch (e) {
+    //           console.error("[Request] parse error", text, msg);
+    //         }
+    //       },
+    //       onclose() {
+    //         finish();
+    //       },
+    //       onerror(e) {
+    //         options.onError?.(e);
+    //         throw e;
+    //       },
+    //       openWhenHidden: true,
+    //     });
+    //   } else {
+    //     const res = await fetch(chatPath, chatPayload);
+    //     clearTimeout(requestTimeoutId);
+
+    //     const resJson = await res.json();
+    //     const message = this.extractMessage(resJson);
+    //     options.onFinish(message);
+    //   }
+    // } catch (e) {
+    //   console.log("[Request] failed to make a chat reqeust", e);
+    //   options.onError?.(e as Error);
+    // }
   }
   async usage() {
     const formatDate = (d: Date) =>

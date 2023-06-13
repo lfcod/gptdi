@@ -29,7 +29,7 @@ export function ModelConfigList(props: {
           ))}
         </Select>
       </ListItem>
-      <ListItem
+      {/* <ListItem
         title={Locale.Settings.Temperature.Title}
         subTitle={Locale.Settings.Temperature.SubTitle}
       >
@@ -134,7 +134,7 @@ export function ModelConfigList(props: {
             )
           }
         ></input>
-      </ListItem>
+      </ListItem> */}
     </>
   );
 }

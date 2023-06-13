@@ -332,7 +332,7 @@ export function Settings() {
         </div>
       </div>
       <div className={styles["settings"]}>
-        <List>
+        {/* <List>
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
@@ -481,8 +481,8 @@ export function Settings() {
               }
             ></input>
           </ListItem>
-        </List>
-
+        </List> */}
+        {/* 
         <List>
           {enabledAccessControl ? (
             <ListItem
@@ -502,21 +502,7 @@ export function Settings() {
             <></>
           )}
 
-          {!accessStore.hideUserApiKey ? (
-            <ListItem
-              title={Locale.Settings.Token.Title}
-              subTitle={Locale.Settings.Token.SubTitle}
-            >
-              <PasswordInput
-                value={accessStore.token}
-                type="text"
-                placeholder={Locale.Settings.Token.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateToken(e.currentTarget.value);
-                }}
-              />
-            </ListItem>
-          ) : null}
+          
 
           <ListItem
             title={Locale.Settings.Usage.Title}
@@ -541,9 +527,9 @@ export function Settings() {
               />
             )}
           </ListItem>
-        </List>
+        </List> */}
 
-        <List>
+        {/* <List>
           <ListItem
             title={Locale.Settings.Prompt.Disable.Title}
             subTitle={Locale.Settings.Prompt.Disable.SubTitle}
@@ -573,7 +559,7 @@ export function Settings() {
               onClick={() => setShowPromptModal(true)}
             />
           </ListItem>
-        </List>
+        </List> */}
 
         <List>
           <ModelConfigList
@@ -585,10 +571,37 @@ export function Settings() {
             }}
           />
         </List>
+        <ListItem
+          title={"appId"}
+          subTitle={"请在devgpt.com里查看自己的的appid"}
+        >
+          <PasswordInput
+            value={accessStore.appid}
+            type="text"
+            placeholder={"请在devgpt.com里查看自己的的appid"}
+            onChange={(e) => {
+              accessStore.updateAppId(e.currentTarget.value);
+            }}
+          />
+        </ListItem>
 
-        {shouldShowPromptModal && (
+        <ListItem
+          title={"appsecret"}
+          subTitle={"请在devgpt.com里查看自己的的appsecret"}
+        >
+          <PasswordInput
+            value={accessStore.appsecret}
+            type="text"
+            placeholder={"请在devgpt.com里查看自己的的appid"}
+            onChange={(e) => {
+              accessStore.updateAppsecret(e.currentTarget.value);
+            }}
+          />
+        </ListItem>
+
+        {/* {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
-        )}
+        )} */}
       </div>
     </ErrorBoundary>
   );

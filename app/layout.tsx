@@ -34,9 +34,14 @@ export default function RootLayout({
       <head>
         <meta name="version" content={buildConfig.commitId} />
         <link rel="manifest" href="/site.webmanifest"></link>
+        <script src="/sse.js" defer></script>
         <script src="/serviceWorkerRegister.js" defer></script>
       </head>
-      <body>{children}</body>
+      <body>
+        请遵守内容安全协议，禁止提交违规内容，
+        违规内容会被系统拦截，严重者可能会被注销账号。
+        {children}
+      </body>
     </html>
   );
 }
