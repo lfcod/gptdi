@@ -1,6 +1,7 @@
 import { useDebouncedCallback } from "use-debounce";
+import axios from "axios";
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
-
+import { ToastContainer, toast } from "react-toastify";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -61,6 +62,8 @@ import { useMaskStore } from "../store/mask";
 import { useCommand } from "../command";
 import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
+import { getHeaders } from "../client/api";
+import "react-toastify/dist/ReactToastify.css";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -533,8 +536,22 @@ export function Chat() {
     }
   };
 
-  const doSubmit = (userInput: string) => {
+  const doSubmit = async (userInput: string) => {
+    const header = getHeaders();
+    if (!header?.appid || !header?.appsecret) {
+      toast.error("请点击左下角设置填入你自己的 appid和appsecret");
+      return;
+    }
     if (userInput.trim() === "") return;
+    const text = userInput.trim();
+    const res = await axios.post("https://api.fe8.cn/v1/service/checkText", {
+      text,
+    });
+    if (res?.data?.code !== 0) {
+      toast.error(res?.data?.message || "请检查输入词汇");
+      return;
+    }
+
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));
     localStorage.setItem(LAST_INPUT_KEY, userInput);
@@ -717,6 +734,7 @@ export function Chat() {
 
   return (
     <div className={styles.chat} key={session.id}>
+      <ToastContainer />
       <div className="window-header">
         <div className="window-header-title">
           <div

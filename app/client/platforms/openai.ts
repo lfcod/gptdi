@@ -2,7 +2,6 @@ import { OpenaiPath, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import { ChatOptions, getHeaders, LLMApi, LLMUsage } from "../api";
-import { openAi } from "../../utils/config";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -24,7 +23,11 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
-    console.log("options", options);
+    const headers = getHeaders();
+    if (!headers?.appid || !headers?.appsecret) {
+      console.log("headers", headers);
+      return;
+    }
     const messages = options.messages.map((v) => ({
       role: v.role,
       content: v.content,
@@ -51,157 +54,114 @@ export class ChatGPTApi implements LLMApi {
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
-    const chatPayload = {
-      method: "POST",
-      body: JSON.stringify(requestPayload),
-      signal: controller.signal,
-      headers: getHeaders(),
-    };
 
-    const params = {
-      ...requestPayload,
-    };
+    try {
+      const chatPath = `https://api.fe8.cn/v1/chat/completions`;
+      const chatPayload = {
+        method: "POST",
+        body: JSON.stringify(requestPayload),
+        signal: controller.signal,
+        headers,
+      };
 
-    // try {
-    //   const options = {
-    //     onMessage: (val) => {
-    //       const newMsg = val?.content;
-    //       // list[1] = {
-    //       //   role: ROLENAME.CHATBOT,
-    //       //   content: newMsg + `<span class="blinking-cursor"></span>`,
-    //       // };
-    //       // setNewMessageListFn(list);
-    //     },
-    //     onEnd: async (val) => {
-    //       // setLoading(false);
+      // make a fetch request
+      const requestTimeoutId = setTimeout(
+        () => controller.abort(),
+        REQUEST_TIMEOUT_MS,
+      );
 
-    //       const newMsg = val?.content;
-    //       // await saveMessage({
-    //       //   message: newMsg,
-    //       //   question: inputText,
-    //       //   type: 2,
-    //       // });
-    //       // list[1] = {
-    //       //   role: ROLENAME.CHATBOT,
-    //       //   content: newMsg,
-    //       // };
-    //       // setNewMessageListFn(list);
-    //     },
-    //   };
+      if (shouldStream) {
+        let responseText = "";
+        let finished = false;
 
-    //   openAi(params, options);
-    // } catch {
-    //   // setLoading(false);
-    // }
+        const finish = () => {
+          if (!finished) {
+            options.onFinish(responseText);
+            finished = true;
+          }
+        };
 
-    // try {
-    //   const chatPath = `https://api.fe8.cn/v1/chat/completions`;
-    //   const chatPayload = {
-    //     method: "POST",
-    //     body: JSON.stringify(requestPayload),
-    //     signal: controller.signal,
-    //     headers: getHeaders(),
-    //   };
-    //   console.log("chatPayload", chatPayload);
+        controller.signal.onabort = finish;
 
-    //   // make a fetch request
-    //   const requestTimeoutId = setTimeout(
-    //     () => controller.abort(),
-    //     REQUEST_TIMEOUT_MS,
-    //   );
+        fetchEventSource(chatPath, {
+          ...chatPayload,
+          async onopen(res) {
+            clearTimeout(requestTimeoutId);
+            const contentType = res.headers.get("content-type");
+            console.log(
+              "[OpenAI] request response content type: ",
+              contentType,
+            );
 
-    //   if (shouldStream) {
-    //     let responseText = "";
-    //     let finished = false;
+            if (contentType?.startsWith("text/plain")) {
+              responseText = await res.clone().text();
+              return finish();
+            }
 
-    //     const finish = () => {
-    //       if (!finished) {
-    //         options.onFinish(responseText);
-    //         finished = true;
-    //       }
-    //     };
+            if (
+              !res.ok ||
+              !res.headers
+                .get("content-type")
+                ?.startsWith(EventStreamContentType) ||
+              res.status !== 200
+            ) {
+              const responseTexts = [responseText];
+              let extraInfo = await res.clone().text();
+              try {
+                const resJson = await res.clone().json();
+                extraInfo = prettyObject(resJson);
+              } catch {}
 
-    //     controller.signal.onabort = finish;
+              if (res.status === 401) {
+                responseTexts.push(Locale.Error.Unauthorized);
+              }
 
-    //     fetchEventSource(chatPath, {
-    //       ...chatPayload,
-    //       async onopen(res) {
-    //         clearTimeout(requestTimeoutId);
-    //         const contentType = res.headers.get("content-type");
-    //         console.log(
-    //           "[OpenAI] request response content type: ",
-    //           contentType,
-    //         );
+              if (extraInfo) {
+                responseTexts.push(extraInfo);
+              }
 
-    //         if (contentType?.startsWith("text/plain")) {
-    //           responseText = await res.clone().text();
-    //           return finish();
-    //         }
+              responseText = responseTexts.join("\n\n");
 
-    //         if (
-    //           !res.ok ||
-    //           !res.headers
-    //             .get("content-type")
-    //             ?.startsWith(EventStreamContentType) ||
-    //           res.status !== 200
-    //         ) {
-    //           const responseTexts = [responseText];
-    //           let extraInfo = await res.clone().text();
-    //           try {
-    //             const resJson = await res.clone().json();
-    //             extraInfo = prettyObject(resJson);
-    //           } catch {}
+              return finish();
+            }
+          },
+          onmessage(msg) {
+            if (msg.data === "[DONE]" || finished) {
+              return finish();
+            }
+            const text = msg.data;
+            try {
+              const json = JSON.parse(text);
+              const delta = json.choices[0].delta.content;
+              if (delta) {
+                responseText += delta;
+                options.onUpdate?.(responseText, delta);
+              }
+            } catch (e) {
+              console.error("[Request] parse error", text, msg);
+            }
+          },
+          onclose() {
+            finish();
+          },
+          onerror(e) {
+            options.onError?.(e);
+            throw e;
+          },
+          openWhenHidden: true,
+        });
+      } else {
+        const res = await fetch(chatPath, chatPayload);
+        clearTimeout(requestTimeoutId);
 
-    //           if (res.status === 401) {
-    //             responseTexts.push(Locale.Error.Unauthorized);
-    //           }
-
-    //           if (extraInfo) {
-    //             responseTexts.push(extraInfo);
-    //           }
-
-    //           responseText = responseTexts.join("\n\n");
-
-    //           return finish();
-    //         }
-    //       },
-    //       onmessage(msg) {
-    //         if (msg.data === "[DONE]" || finished) {
-    //           return finish();
-    //         }
-    //         const text = msg.data;
-    //         try {
-    //           const json = JSON.parse(text);
-    //           const delta = json.choices[0].delta.content;
-    //           if (delta) {
-    //             responseText += delta;
-    //             options.onUpdate?.(responseText, delta);
-    //           }
-    //         } catch (e) {
-    //           console.error("[Request] parse error", text, msg);
-    //         }
-    //       },
-    //       onclose() {
-    //         finish();
-    //       },
-    //       onerror(e) {
-    //         options.onError?.(e);
-    //         throw e;
-    //       },
-    //       openWhenHidden: true,
-    //     });
-    //   } else {
-    //     const res = await fetch(chatPath, chatPayload);
-    //     clearTimeout(requestTimeoutId);
-
-    //     const resJson = await res.json();
-    //     const message = this.extractMessage(resJson);
-    //     options.onFinish(message);
-    //   }
-    // } catch (e) {
-    //   console.log("[Request] failed to make a chat reqeust", e);
-    //   options.onError?.(e as Error);
-    // }
+        const resJson = await res.json();
+        const message = this.extractMessage(resJson);
+        options.onFinish(message);
+      }
+    } catch (e) {
+      console.log("[Request] failed to make a chat reqeust", e);
+      options.onError?.(e as Error);
+    }
   }
   async usage() {
     const formatDate = (d: Date) =>

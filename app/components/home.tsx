@@ -50,6 +50,10 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
 
+const Security = dynamic(async () => await import("./security"), {
+  loading: () => <Loading noLogo />,
+});
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -128,9 +132,14 @@ function Screen() {
       ) : (
         <>
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-
           <div className={styles["window-content"]} id={SlotID.AppBody}>
+            <div>
+              请遵守<a href={`/#${Path.Security}`}>内容安全协议</a>
+              ，禁止提交违规内容，
+              违规内容会被系统拦截，严重者可能会被注销账号。
+            </div>
             <Routes>
+              <Route path={Path.Security} element={<Security />} />
               <Route path={Path.Home} element={<Chat />} />
               <Route path={Path.NewChat} element={<NewChat />} />
               <Route path={Path.Masks} element={<MaskPage />} />
