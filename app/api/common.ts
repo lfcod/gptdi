@@ -37,8 +37,8 @@ export async function requestOpenai(req: NextRequest) {
     headers: {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
-      appid: localStorage.getItem("appid") || "",
-      appsecret: localStorage.getItem("appsecret") || "",
+      appid: localStorage.getItem("appid") || "64859716613cb",
+      appsecret: localStorage.getItem("appsecret") || "0c11836369674cb6c8139497914c94dc",
 
       // Authorization: authValue,
       ...(process.env.OPENAI_ORG_ID && {
