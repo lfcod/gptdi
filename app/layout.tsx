@@ -24,6 +24,15 @@ export const metadata = {
     statusBarStyle: "default",
   },
 };
+const baidu_tongji = `
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?f851f0774b650be1c8b07a2667e3b73d";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+`;
 
 export default function RootLayout({
   children,
@@ -33,6 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: baidu_tongji }} />
         <meta name="version" content={buildConfig.commitId} />
         <link rel="manifest" href="/site.webmanifest"></link>
         <script src="/sse.js" defer></script>
