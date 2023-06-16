@@ -112,7 +112,7 @@ export function SideBar(props: { className?: string }) {
 
   useHotKey();
 
-  const Redirection = (url) => {
+  const Redirection = (url: any) => {
     window.open(url, "_blank");
   };
 
@@ -139,20 +139,6 @@ export function SideBar(props: { className?: string }) {
             400+ Ai应用导航
           </a>
         </div>
-        {/* <div
-          onClick={() =>
-            Redirection("https://emkok.com/?ref=sidebarkok")
-          }
-        >
-          免费：更高效使用GPT
-        </div>
-        <div
-          onClick={() =>
-            Redirection("https://ioii.cn/?ref=sidebarkok")
-          }
-        >
-          400+ Ai导航
-        </div> */}
 
       </div>
 
