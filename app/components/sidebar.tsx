@@ -112,6 +112,10 @@ export function SideBar(props: { className?: string }) {
 
   useHotKey();
 
+  const Redirection = (url) => {
+    window.open(url, "_blank");
+  };
+
   return (
     <div
       className={`${styles.sidebar} ${props.className} ${shouldNarrow && styles["narrow-sidebar"]
@@ -124,6 +128,18 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
+        </div>
+        <div
+          onClick={() =>
+            Redirection("https://ioii.cn/?ref=sidebarkok")
+          }
+          shadow
+          size="lg"
+          ghost
+          color="gradient"
+          auto
+        >
+          400+ Ai导航
         </div>
       </div>
 
