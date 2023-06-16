@@ -129,7 +129,17 @@ export function SideBar(props: { className?: string }) {
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
-        <div
+        <div className={styles["sidebar-action"]}>
+          <a href={"https://emkok.com/?ref=didi"} target="_blank">
+            免费：更高效的使用GPT
+          </a>
+        </div>
+        <div className={styles["sidebar-action"]}>
+          <a href={"https://ioii.cn/?ref=didi"} target="_blank">
+            400+ Ai应用导航
+          </a>
+        </div>
+        {/* <div
           onClick={() =>
             Redirection("https://emkok.com/?ref=sidebarkok")
           }
@@ -142,7 +152,7 @@ export function SideBar(props: { className?: string }) {
           }
         >
           400+ Ai导航
-        </div>
+        </div> */}
 
       </div>
 
