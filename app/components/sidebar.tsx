@@ -124,23 +124,26 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-header"]}>
         <div className={styles["sidebar-title"]}>GPT DiDi</div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant. gptdidi.com
+          gptdidi.com
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
         <div
           onClick={() =>
+            Redirection("https://emkok.com/?ref=sidebarkok")
+          }
+        >
+          免费：更高效使用GPT
+        </div>
+        <div
+          onClick={() =>
             Redirection("https://ioii.cn/?ref=sidebarkok")
           }
-          shadow
-          size="lg"
-          ghost
-          color="gradient"
-          auto
         >
           400+ Ai导航
         </div>
+
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
