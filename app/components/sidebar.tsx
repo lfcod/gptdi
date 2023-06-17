@@ -140,6 +140,11 @@ export function SideBar(props: { className?: string }) {
           </a>
         </div>
         <div className={styles["sidebar-action"]}>
+          <a href={"https://chatkok.com/?ref=didi"} target="_blank">
+            Free GPT: Chatkok
+          </a>
+        </div>
+        <div className={styles["sidebar-action"]}>
           <a href={"https://ioii.cn/?ref=didi"} target="_blank">
             400+ Ai应用导航
           </a>
