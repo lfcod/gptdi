@@ -141,7 +141,7 @@ export function SideBar(props: { className?: string }) {
         </div>
         <div className={styles["sidebar-action"]}>
           <a href={"https://emkok.com/?ref=didi"} target="_blank">
-            免费：更高效的使用GPT
+            免费：更高效使用GPT,可训练自己的Ai
           </a>
         </div>
         <div className={styles["sidebar-action"]}>
