@@ -130,6 +130,11 @@ export function SideBar(props: { className?: string }) {
           <ChatGptIcon />
         </div>
         <div className={styles["sidebar-action"]}>
+          <a href={"https://www.yuque.com/if/tips/vpo2wycgo4zbixt9"} target="_blank">
+            学习高效使用GPT，加入社区
+          </a>
+        </div>
+        <div className={styles["sidebar-action"]}>
           <a href={"https://xixibot.com/?ref=didi"} target="_blank">
             稳定GPT4
           </a>
