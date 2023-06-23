@@ -688,27 +688,27 @@ export function Chat() {
     .concat(
       isLoading
         ? [
-            {
-              ...createMessage({
-                role: "assistant",
-                content: "……",
-              }),
-              preview: true,
-            },
-          ]
+          {
+            ...createMessage({
+              role: "assistant",
+              content: "……",
+            }),
+            preview: true,
+          },
+        ]
         : [],
     )
     .concat(
       userInput.length > 0 && config.sendPreviewBubble
         ? [
-            {
-              ...createMessage({
-                role: "user",
-                content: userInput,
-              }),
-              preview: true,
-            },
-          ]
+          {
+            ...createMessage({
+              role: "user",
+              content: userInput,
+            }),
+            preview: true,
+          },
+        ]
         : [],
     );
 
@@ -829,7 +829,13 @@ export function Chat() {
                     {message.role === "user" ? (
                       <Avatar avatar={config.avatar} />
                     ) : (
-                      <MaskAvatar mask={session.mask} />
+                      <>
+                        <div style={{ float: 'left' }}>
+                          <MaskAvatar mask={session.mask} />
+                        </div>
+                        <a href="https://xixibot.com/?ref=didi">稳定gpt4</a> <a href="https://emkok.com/?ref=didi">GPT1000+应用</a>
+                      </>
+                      // <MaskAvatar mask={session.mask} />
                     )}
                   </div>
                   {showTyping && (
