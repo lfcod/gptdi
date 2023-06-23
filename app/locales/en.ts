@@ -198,7 +198,7 @@ const en: RequiredLocaleType = {
   },
   Store: {
     DefaultTopic: "New Conversation",
-    BotHello: "Hello! How can I assist you today? 大家一定要遵守言论规范，请勿讨论政治，色情，等敏感。大家可以来这，高效使用GPT，1000+应用：https://emkok.com ， Ai编程，蓝莓Code：https://lanmeicode.com ,  GPT4:https://xixibot.com",
+    BotHello: "Hello! How can I assist you today? 大家一定要遵守言论规范，请勿讨论政治，色情，等敏感。大家可以来这，高效使用GPT，1000+应用：https://emkok.com/?ref=didichat ， Ai编程，蓝莓Code：https://lanmeicode.com/?ref=didichat ,  GPT4: https://xixibot.com/?ref=didichat",
     Error: "Something went wrong, please try again later.",
     Prompt: {
       History: (content: string) =>
