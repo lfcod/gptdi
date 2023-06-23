@@ -196,7 +196,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "大家一定要遵守言论规范，请勿讨论政治，色情，等敏感。大家可以来这，高效使用GPT，1000+应用：https://emkok.com，Ai 编程，蓝莓Code：https://lanmeicode.com,GPT4:https://xixibot.com",
+    BotHello: "大家一定要遵守言论规范，请勿讨论政治，色情，等敏感。大家可以来这，高效使用GPT，1000+应用：https://emkok.com/?ref=didichat ， Ai编程，蓝莓Code：https://lanmeicode.com/?ref=didichat ,  GPT4: https://xixibot.com/?ref=didichat",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
