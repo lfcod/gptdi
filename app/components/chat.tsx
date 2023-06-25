@@ -22,6 +22,7 @@ import DarkIcon from "../icons/dark.svg";
 import AutoIcon from "../icons/auto.svg";
 import BottomIcon from "../icons/bottom.svg";
 import StopIcon from "../icons/pause.svg";
+import { isLogin } from "../utils/index";
 
 import {
   ChatMessage,
@@ -64,6 +65,7 @@ import { prettyObject } from "../utils/format";
 import { ExportMessageModal } from "./exporter";
 import { getHeaders } from "../client/api";
 import "react-toastify/dist/ReactToastify.css";
+import LoginModal from "./login";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -537,6 +539,7 @@ export function Chat() {
   };
 
   const doSubmit = async (userInput: string) => {
+    !isLogin() && setLoginVisble(true);
     const header = getHeaders();
     if (!header?.appid || !header?.appsecret) {
       toast.error("请点击左下角设置填入你自己的 appid和appsecret");
@@ -688,31 +691,32 @@ export function Chat() {
     .concat(
       isLoading
         ? [
-          {
-            ...createMessage({
-              role: "assistant",
-              content: "……",
-            }),
-            preview: true,
-          },
-        ]
+            {
+              ...createMessage({
+                role: "assistant",
+                content: "……",
+              }),
+              preview: true,
+            },
+          ]
         : [],
     )
     .concat(
       userInput.length > 0 && config.sendPreviewBubble
         ? [
-          {
-            ...createMessage({
-              role: "user",
-              content: userInput,
-            }),
-            preview: true,
-          },
-        ]
+            {
+              ...createMessage({
+                role: "user",
+                content: userInput,
+              }),
+              preview: true,
+            },
+          ]
         : [],
     );
 
   const [showPromptModal, setShowPromptModal] = useState(false);
+  const [loginVisible, setLoginVisble] = useState(false);
 
   const renameSession = () => {
     const newTopic = prompt(Locale.Chat.Rename, session.topic);
@@ -734,6 +738,10 @@ export function Chat() {
 
   return (
     <div className={styles.chat} key={session.id}>
+      {loginVisible && (
+        <LoginModal visible={loginVisible} setVisible={setLoginVisble} />
+      )}
+
       <ToastContainer />
       <div className="window-header">
         <div className="window-header-title">
@@ -830,10 +838,11 @@ export function Chat() {
                       <Avatar avatar={config.avatar} />
                     ) : (
                       <>
-                        <div style={{ float: 'left' }}>
+                        <div style={{ float: "left" }}>
                           <MaskAvatar mask={session.mask} />
                         </div>
-                        <a href="https://xixibot.com/?ref=didi">稳定gpt4</a> <a href="https://emkok.com/?ref=didi">GPT1000+应用</a>
+                        <a href="https://xixibot.com/?ref=didi">稳定gpt4</a>{" "}
+                        <a href="https://emkok.com/?ref=didi">GPT1000+应用</a>
                       </>
                       // <MaskAvatar mask={session.mask} />
                     )}
