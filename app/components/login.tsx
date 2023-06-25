@@ -97,6 +97,10 @@ export default function LoginModal({ visible, setVisible }) {
             fullWidth
             color="primary"
             size="lg"
+            style={{
+              border: "none",
+              padding: 0,
+            }}
             placeholder="请输入您的邮箱"
             contentLeft={<Mail fill="currentColor" />}
           />
@@ -108,6 +112,9 @@ export default function LoginModal({ visible, setVisible }) {
             color="primary"
             size="lg"
             placeholder="验证码"
+            style={{
+              border: "none",
+            }}
             contentLeft={<VerifiedOutlined />}
             contentRight={
               <Button
@@ -116,7 +123,6 @@ export default function LoginModal({ visible, setVisible }) {
                 style={{
                   width: "40px",
                   position: "relative",
-                  left: "-38px",
                 }}
                 auto
               >
