@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -27,6 +27,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showToast } from "./ui-lib";
+import LoginModal from "./login";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -104,6 +105,7 @@ function useDragSideBar() {
 
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
+  const [loginVisible, setLoginVisble] = useState(false);
 
   // drag side bar
   const { onDragMouseDown, shouldNarrow } = useDragSideBar();
@@ -118,14 +120,18 @@ export function SideBar(props: { className?: string }) {
 
   return (
     <div
-      className={`${styles.sidebar} ${props.className} ${shouldNarrow && styles["narrow-sidebar"]
-        }`}
+      className={`${styles.sidebar} ${props.className} ${
+        shouldNarrow && styles["narrow-sidebar"]
+      }`}
     >
+      <div>
+        {loginVisible && (
+          <LoginModal visible={loginVisible} setVisible={setLoginVisble} />
+        )}
+      </div>
       <div className={styles["sidebar-header"]}>
         <div className={styles["sidebar-title"]}>GPT DiDi</div>
-        <div className={styles["sidebar-sub-title"]}>
-          gptdidi.com
-        </div>
+        <div className={styles["sidebar-sub-title"]}>gptdidi.com</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
@@ -135,7 +141,10 @@ export function SideBar(props: { className?: string }) {
           </a>
         </div>
         <div className={styles["sidebar-action"]}>
-          <a href={"https://www.yuque.com/if/tips/vpo2wycgo4zbixt9"} target="_blank">
+          <a
+            href={"https://www.yuque.com/if/tips/vpo2wycgo4zbixt9"}
+            target="_blank"
+          >
             学习高效使用GPT，加入社区
           </a>
         </div>
@@ -159,7 +168,6 @@ export function SideBar(props: { className?: string }) {
             400+ Ai应用导航
           </a>
         </div>
-
       </div>
 
       <div className={styles["sidebar-header-bar"]}>
@@ -207,6 +215,15 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
+        </div>
+        <div className={styles["sidebar-login"]}>
+          <IconButton
+            text={Locale.Login.Text}
+            onClick={() => {
+              setLoginVisble(true);
+            }}
+            shadow
+          />
         </div>
         <div>
           <IconButton
