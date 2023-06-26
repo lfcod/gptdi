@@ -16,7 +16,7 @@
     "@ant-design/icons": "^5.0.1",
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.2.0",
-    "@nextui-org/react": "^1.0.0-beta.13",
+    "@nextui-org/react": "1.0.0-beta.13",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
     "antd": "^5.6.3",

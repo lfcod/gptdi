@@ -547,13 +547,13 @@ export function Chat() {
     }
     if (userInput.trim() === "") return;
     const text = userInput.trim();
-    const res = await axios.post("https://api.fe8.cn/v1/service/checkText", {
-      text,
-    });
-    if (res?.data?.code !== 0) {
-      toast.error(res?.data?.message || "请检查输入词汇");
-      return;
-    }
+    // const res = await axios.post("https://api.fe8.cn/v1/service/checkText", {
+    //   text,
+    // });
+    // if (res?.data?.code !== 0) {
+    //   toast.error(res?.data?.message || "请检查输入词汇");
+    //   return;
+    // }
 
     setIsLoading(true);
     chatStore.onUserInput(userInput).then(() => setIsLoading(false));

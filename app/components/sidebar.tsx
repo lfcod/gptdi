@@ -228,7 +228,7 @@ export function SideBar(props: { className?: string }) {
             />
           ) : (
             <IconButton
-              text={Locale.Login.Text}
+              text={Locale.Login?.Text}
               onClick={() => {
                 setLoginVisble(true);
               }}
