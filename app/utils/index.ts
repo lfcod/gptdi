@@ -70,20 +70,20 @@ export const browser = () => {
 /**
  * 获取url参数数据，返回obj对象
  */
-export const getUrlToJson = (url?: string): any => {
+export const getUrlToJson = (url?: string): Record<string, string> => {
   try {
-    const strUrl = url || window?.location?.href || "";
-    const temp1 = strUrl.split("?");
-    const pram = temp1[1];
+    const strUrl: string = url || window?.location?.href || "";
+    const temp1: string[] = strUrl.split("?");
+    const pram: string = temp1[1];
     if (pram === "undefined" || !pram) {
       return {};
     }
-    const keyValue = pram.split("&");
-    const obj = {};
+    const keyValue: string[] = pram.split("&");
+    const obj: Record<string, string> = {};
     for (let i = 0; i < keyValue.length; i++) {
-      const item = keyValue[i].split("=");
-      const key = item[0];
-      const value = item[1];
+      const item: string[] = keyValue[i].split("=");
+      const key: string = item[0];
+      const value: string = item[1];
       obj[key] = value;
     }
     return obj;
@@ -104,15 +104,15 @@ export const copyValue = (value: string) => {
 
 /**
  * 时间戳转化为日期字符串
- * @param {timestamp} stamp 时间戳
- * @param {bool} unix 秒级使用unix
- * @param {string} format 格式化字符串
+ * @param stamp 时间戳
+ * @param unix 秒级使用 unix 时间戳格式
+ * @param format 格式化字符串
  */
 export const formatTime = (
-  stamp,
-  unix = true,
-  format = "YYYY-MM-DD HH:mm:ss",
-) => {
+  stamp: number,
+  unix: boolean = true,
+  format: string = "YYYY-MM-DD HH:mm:ss",
+): string => {
   return unix
     ? moment.unix(stamp).format(format)
     : moment(stamp).format(format);
