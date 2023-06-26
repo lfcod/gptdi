@@ -8,7 +8,7 @@ import { vaildEmail } from "../utils/index";
 
 const BRAND_TITLE = "DEVGPT";
 
-export default function LoginModal({ visible, setVisible }) {
+export default function LoginModal({ visible, setVisible }: any) {
   const [sendLoading, setSendLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [email, setEmail] = useState("");
