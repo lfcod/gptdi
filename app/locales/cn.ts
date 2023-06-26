@@ -97,6 +97,7 @@ const cn = {
   },
   Login: {
     Text: "登录",
+    Out: "退出",
   },
   Settings: {
     Title: "设置",

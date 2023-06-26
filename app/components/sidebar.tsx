@@ -28,6 +28,7 @@ import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showToast } from "./ui-lib";
 import LoginModal from "./login";
+import { isLogin, logout } from "../utils/index";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -217,13 +218,23 @@ export function SideBar(props: { className?: string }) {
           </div>
         </div>
         <div className={styles["sidebar-login"]}>
-          <IconButton
-            text={Locale.Login.Text}
-            onClick={() => {
-              setLoginVisble(true);
-            }}
-            shadow
-          />
+          {isLogin() ? (
+            <IconButton
+              text={Locale.Login.Out}
+              onClick={() => {
+                logout();
+              }}
+              shadow
+            />
+          ) : (
+            <IconButton
+              text={Locale.Login.Text}
+              onClick={() => {
+                setLoginVisble(true);
+              }}
+              shadow
+            />
+          )}
         </div>
         <div>
           <IconButton

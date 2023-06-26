@@ -12,6 +12,10 @@ export const isLogin = () => {
   }
   return false;
 };
+export const logout = () => {
+  localStorage.removeItem("token");
+  location.reload();
+};
 
 export const isPc = () => {
   if (checkServer()) return false;
