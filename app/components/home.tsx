@@ -133,11 +133,11 @@ function Screen() {
         <>
           <SideBar className={isHome ? styles["sidebar-show"] : ""} />
           <div className={styles["window-content"]} id={SlotID.AppBody}>
-            <div>
+            {/* <div>
               请遵守<a href={`/#${Path.Security}`}>内容安全协议</a>
               ，禁止提交违规内容，
               违规内容会被系统拦截，严重者可能会被注销账号。
-            </div>
+            </div> */}
             <Routes>
               <Route path={Path.Security} element={<Security />} />
               <Route path={Path.Home} element={<Chat />} />
