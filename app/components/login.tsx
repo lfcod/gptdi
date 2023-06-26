@@ -63,7 +63,7 @@ export default function LoginModal({ visible, setVisible }: any) {
   };
 
   useEffect(() => {
-    let timer;
+    let timer: any;
     if (isCodeSent && countdown > 0) {
       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
     } else if (countdown === 0) {
@@ -102,7 +102,14 @@ export default function LoginModal({ visible, setVisible }: any) {
               padding: 0,
             }}
             placeholder="请输入您的邮箱"
-            contentLeft={<Mail fill="currentColor" />}
+            contentLeft={
+              <Mail
+                fill="currentColor"
+                size={undefined}
+                height={undefined}
+                width={undefined}
+              />
+            }
           />
           <Input
             onChange={(e) => setCode(e?.target?.value)}
@@ -115,7 +122,7 @@ export default function LoginModal({ visible, setVisible }: any) {
             style={{
               border: "none",
             }}
-            contentLeft={<VerifiedOutlined />}
+            contentLeft={<VerifiedOutlined rev={undefined} />}
             contentRight={
               <Button
                 disabled={sendLoading || isCodeSent}
