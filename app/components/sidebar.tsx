@@ -133,7 +133,7 @@ export function SideBar(props: { className?: string }) {
       <div className={styles["sidebar-header"]}>
         <div className={styles["sidebar-title"]}> GpppT</div>
         <div className={styles["sidebar-sub-title"]}>
-          新地址，低调使用：https://gpppt.com
+          新地址，低调使用：
           <a href={"https://gpppt.com"} target="_blank">
             https://gpppt.com
           </a>
