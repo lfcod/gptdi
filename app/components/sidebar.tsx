@@ -131,8 +131,10 @@ export function SideBar(props: { className?: string }) {
         )}
       </div>
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>GPT DiDi</div>
-        <div className={styles["sidebar-sub-title"]}>gptdidi.com</div>
+        <div className={styles["sidebar-title"]}> GpppT</div>
+        <div className={styles["sidebar-sub-title"]}>
+          新地址，低调使用：https://gpppt.com
+        </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
         </div>
