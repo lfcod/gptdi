@@ -131,15 +131,20 @@ export function SideBar(props: { className?: string }) {
         )}
       </div>
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}> GpppT</div>
-        <div className={styles["sidebar-sub-title"]}>
-          新地址，低调使用：
-          <a href={"https://gpppt.com"} target="_blank">
-            https://gpppt.com
-          </a>
-        </div>
+        <div className={styles["sidebar-title"]}>GPT DiDi</div>
+        <div className={styles["sidebar-sub-title"]}>gpppt.com</div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
+        </div>
+        <div className={styles["sidebar-action"]}>
+          <a href={"https://gpppt.com/?ref=gptdidi"} target="_blank">
+            new address：gpppt.com
+          </a>
+        </div>
+        <div className={styles["sidebar-action"]}>
+          <a href={"https://github.com/gptpea/gptpea/issues"} target="_blank">
+            if this website unavailable，please tell issue
+          </a>
         </div>
         <div className={styles["sidebar-action"]}>
           <a href={"https://lanmeicode.com/?ref=gptdidi"} target="_blank">
